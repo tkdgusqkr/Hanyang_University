@@ -241,7 +241,13 @@ int isPositive(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
- return 2;
+    unsigned exp = uf & 0x7F800000;
+    unsigned frac = uf & 0x007FFFFF;
+    if(exp == 0x7F800000 && frac != 0){
+        return uf;
+    }else{
+        return uf ^ 0x80000000;
+    }
 }
 /* 
  * float_twice - Return bit-level equivalent of expression 2*f for
@@ -255,5 +261,13 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_twice(unsigned uf) {
-  return 2;
+    unsigned sign = uf & 0x80000000;
+    unsigned exp = uf & 0x7F800000;
+    if(exp == 0x7F800000){
+        return uf;
+    }else if(exp == 0){
+        return sign | (uf << 1);
+    }else{
+        return uf + 0x00800000;
+    }
 }
